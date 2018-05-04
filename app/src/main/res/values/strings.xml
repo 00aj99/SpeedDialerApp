@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">Speed Dialer App</string>
+    <string name="confirm">Confirm</string>
+    <string name="close">Close</string>
 </resources>
