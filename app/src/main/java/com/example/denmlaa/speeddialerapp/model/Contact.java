@@ -5,18 +5,12 @@ public class Contact {
     private int id;
     private String contactName;
     private String contactNumber;
-    private int contactImage;
+    private String contactImage;
 
-    public Contact(int id, String contactName, String contactNumber, int contactImage) {
-        this.id = id;
+    public Contact(String contactName, String contactNumber, String contactImage) {
         this.contactName = contactName;
         this.contactNumber = contactNumber;
         this.contactImage = contactImage;
-    }
-
-    public Contact(String contactName, String contactNumber) {
-        this.contactName = contactName;
-        this.contactNumber = contactNumber;
     }
 
     public int getId() {
@@ -43,11 +37,11 @@ public class Contact {
         this.contactNumber = contactNumber;
     }
 
-    public int getContactImage() {
+    public String getContactImage() {
         return contactImage;
     }
 
-    public void setContactImage(int contactImage) {
+    public void setContactImage(String contactImage) {
         this.contactImage = contactImage;
     }
 }
