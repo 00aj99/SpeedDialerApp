@@ -7,10 +7,13 @@ import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.model.Contact;
@@ -35,7 +38,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
         final Contact contact = contacts.get(position);
 
         holder.contact_name.setText(contact.getContactName());
@@ -54,6 +57,36 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
                 Uri number = Uri.parse("tel:" + contact.getContactNumber());
                 Intent callIntent = new Intent(Intent.ACTION_CALL, number);
                 context.startActivity(callIntent);
+            }
+        });
+
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                PopupMenu popupMenu = new PopupMenu(context, holder.itemView);
+                popupMenu.inflate(R.menu.contact_menu);
+                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                    @SuppressLint("MissingPermission")
+                    @Override
+                    public boolean onMenuItemClick(MenuItem item) {
+                        // TODO Set the theme for menu, current color white
+                        switch (item.getItemId()) {
+                            case R.id.menu_call:
+                                Uri number = Uri.parse("tel:" + contact.getContactNumber());
+                                Intent callContactIntent = new Intent(Intent.ACTION_CALL, number);
+                                context.startActivity(callContactIntent);
+                                break;
+                            case R.id.menu_widget:
+                                Toast.makeText(context, "Widget", Toast.LENGTH_SHORT).show();
+                                break;
+                            default:
+                                break;
+                        }
+                        return false;
+                    }
+                });
+                popupMenu.show();
+                return true;
             }
         });
     }

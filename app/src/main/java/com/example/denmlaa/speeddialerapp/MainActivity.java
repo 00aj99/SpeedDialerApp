@@ -53,10 +53,12 @@ public class MainActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             case R.id.item1:
                 Toast.makeText(this, "Item 1 selected", Toast.LENGTH_SHORT).show();
-                return true;
+                break;
             case R.id.item2:
                 Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show();
-                return true;
+                break;
+            default:
+                break;
         }
         
         return super.onOptionsItemSelected(item);
