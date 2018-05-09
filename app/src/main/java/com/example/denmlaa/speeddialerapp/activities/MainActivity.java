@@ -1,9 +1,9 @@
-package com.example.denmlaa.speeddialerapp;
+package com.example.denmlaa.speeddialerapp.activities;
 
 import android.database.Cursor;
+import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.adapter.ContactsRVAdapter;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
@@ -43,24 +44,22 @@ public class MainActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.app_menu, menu);
-
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-
         switch (item.getItemId()) {
             case R.id.item1:
-                Toast.makeText(this, "Item 1 selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Backup contacts", Toast.LENGTH_SHORT).show();
                 break;
             case R.id.item2:
-                Toast.makeText(this, "Item 2 selected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(this, "Restore contacts", Toast.LENGTH_SHORT).show();
                 break;
             default:
                 break;
         }
-        
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -70,7 +69,7 @@ public class MainActivity extends AppCompatActivity {
         Cursor cursor = this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
 
-        if (cursor != null) {
+        if (cursor != null && cursor.getCount() > 0) {
             cursor.moveToFirst();
         }
 
@@ -83,4 +82,5 @@ public class MainActivity extends AppCompatActivity {
         cursor.close();
         return contacts;
     }
+
 }

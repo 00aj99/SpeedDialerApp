@@ -1,6 +1,8 @@
 package com.example.denmlaa.speeddialerapp.model;
 
-public class Contact {
+import java.io.Serializable;
+
+public class Contact implements Serializable {
 
     private int id;
     private String contactName;

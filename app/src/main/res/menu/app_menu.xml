@@ -2,12 +2,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <item android:id="@+id/item1"
-        android:title="Backup contacts"
+    <item
+        android:id="@+id/item1"
+        android:title="@string/contacts_backup"
         app:showAsAction="never" />
 
-    <item android:id="@+id/item2"
-        android:title="Restore contacts"
+    <item
+        android:id="@+id/item2"
+        android:title="@string/restore_contacts"
         app:showAsAction="never" />
 
 </menu>

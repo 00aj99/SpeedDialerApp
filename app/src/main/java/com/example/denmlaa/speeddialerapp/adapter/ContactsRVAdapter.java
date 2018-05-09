@@ -1,9 +1,13 @@
 package com.example.denmlaa.speeddialerapp.adapter;
 
 import android.annotation.SuppressLint;
+import android.appwidget.AppWidgetManager;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -13,8 +17,8 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import com.example.denmlaa.speeddialerapp.ContactWidgetProvider;
 import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
@@ -47,7 +51,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         if (contact.getContactImage() != null) {
             holder.contact_image.setImageURI(Uri.parse(contact.getContactImage()));
         } else {
-            holder.contact_image.setImageResource(R.drawable.contact);
+            holder.contact_image.setImageResource(R.drawable.contact_default);
         }
 
         holder.contact_call.setOnClickListener(new View.OnClickListener() {
@@ -65,6 +69,12 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
             public boolean onLongClick(View v) {
                 PopupMenu popupMenu = new PopupMenu(context, holder.itemView);
                 popupMenu.inflate(R.menu.contact_menu);
+
+                // If sdk version is < 26, widget option is hidden
+                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
+                    popupMenu.getMenu().findItem(R.id.menu_widget).setVisible(false);
+                }
+
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
                     @SuppressLint("MissingPermission")
                     @Override
@@ -77,7 +87,18 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
                                 context.startActivity(callContactIntent);
                                 break;
                             case R.id.menu_widget:
-                                Toast.makeText(context, "Widget", Toast.LENGTH_SHORT).show();
+                                // TODO Setup the widget
+                                Bundle bundle = new Bundle();
+//                                bundle.putSerializable("contact", contact);
+
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                    AppWidgetManager mAppWidgetManager = context.getSystemService(AppWidgetManager.class);
+                                    ComponentName myProvider = new ComponentName(context, ContactWidgetProvider.class);
+
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                        mAppWidgetManager.requestPinAppWidget(myProvider, bundle, null);
+                                    }
+                                }
                                 break;
                             default:
                                 break;

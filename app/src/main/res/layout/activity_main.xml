@@ -6,8 +6,8 @@
     android:layout_height="match_parent"
     android:background="@color/shade_black"
     android:orientation="vertical"
-    tools:context=".MainActivity"
-    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+    android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+    tools:context=".activities.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -23,6 +23,6 @@
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_scrollFlags="scroll|enterAlways"/>
+        app:layout_scrollFlags="scroll|enterAlways" />
 
 </android.support.design.widget.CoordinatorLayout>

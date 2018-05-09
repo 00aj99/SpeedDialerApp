@@ -1,4 +1,4 @@
-package com.example.denmlaa.speeddialerapp;
+package com.example.denmlaa.speeddialerapp.activities;
 
 import android.Manifest;
 import android.content.Context;
@@ -15,6 +15,8 @@ import android.os.Bundle;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextView;
+
+import com.example.denmlaa.speeddialerapp.R;
 
 public class SplashWelcomeActivity extends AppCompatActivity {
 
