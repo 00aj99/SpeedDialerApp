@@ -1,14 +1,17 @@
 package com.example.denmlaa.speeddialerapp.adapter;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -18,9 +21,12 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.denmlaa.speeddialerapp.ContactWidgetProvider;
 import com.example.denmlaa.speeddialerapp.R;
+import com.example.denmlaa.speeddialerapp.activities.MainActivity;
+import com.example.denmlaa.speeddialerapp.activities.SplashWelcomeActivity;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
 import java.util.List;
@@ -56,11 +62,14 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         }
 
         holder.contact_call.setOnClickListener(new View.OnClickListener() {
-            @SuppressLint("MissingPermission")
             @Override
             public void onClick(View v) {
                 Uri number = Uri.parse("tel:" + contact.getContactNumber());
                 Intent callIntent = new Intent(Intent.ACTION_CALL, number);
+                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                    Toast.makeText(context, "Application is missing permission to call", Toast.LENGTH_SHORT).show();
+                    return;
+                }
                 context.startActivity(callIntent);
             }
         });
@@ -78,13 +87,16 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
                 }
 
                 popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @SuppressLint("MissingPermission")
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
                         switch (item.getItemId()) {
                             case R.id.menu_call:
                                 Uri number = Uri.parse("tel:" + contact.getContactNumber());
                                 Intent callContactIntent = new Intent(Intent.ACTION_CALL, number);
+                                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
+                                    Toast.makeText(context, "Application is missing permission to call", Toast.LENGTH_SHORT).show();
+                                    return false;
+                                }
                                 context.startActivity(callContactIntent);
                                 break;
                             case R.id.menu_widget:
