@@ -1,23 +1,28 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/shade_black"
-    tools:context=".activities.SplashWelcomeActivity">
+    android:background="@drawable/splash_backgroud"
+    tools:context=".activities.SplashWelcomeActivity"
+    android:orientation="vertical"
+    android:gravity="center">
+
+    <ImageView
+        android:id="@+id/splash_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/phone_splash"/>
 
     <TextView
         android:id="@+id/splash_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/speed_dialer"
-        android:textColor="@android:color/white"
-        android:textSize="20sp"
+        android:textColor="@color/shade_black"
+        android:textSize="26sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_marginTop="20dp"/>
 
-</android.support.constraint.ConstraintLayout>
+</LinearLayout>
