@@ -10,6 +10,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -67,7 +68,8 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                PopupMenu popupMenu = new PopupMenu(context, holder.itemView);
+                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                PopupMenu popupMenu = new PopupMenu(wrapper, holder.itemView);
                 popupMenu.inflate(R.menu.contact_menu);
 
                 // If sdk version is < 26, widget option is hidden
@@ -79,7 +81,6 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
                     @SuppressLint("MissingPermission")
                     @Override
                     public boolean onMenuItemClick(MenuItem item) {
-                        // TODO Set the theme for menu, current color white
                         switch (item.getItemId()) {
                             case R.id.menu_call:
                                 Uri number = Uri.parse("tel:" + contact.getContactNumber());

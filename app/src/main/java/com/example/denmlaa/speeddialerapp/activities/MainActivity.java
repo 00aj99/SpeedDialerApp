@@ -83,4 +83,5 @@ public class MainActivity extends AppCompatActivity {
         return contacts;
     }
 
+    // TODO Backup/Export contacts for share
 }

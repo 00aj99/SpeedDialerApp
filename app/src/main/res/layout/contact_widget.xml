@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="Contact"
+        android:text="Name"
         android:textColor="@android:color/white" />
 
 </RelativeLayout>

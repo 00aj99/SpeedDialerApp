@@ -11,7 +11,7 @@
         android:id="@+id/splash_text"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/splash_screen"
+        android:text="@string/speed_dialer"
         android:textColor="@android:color/white"
         android:textSize="20sp"
         android:textStyle="bold"
