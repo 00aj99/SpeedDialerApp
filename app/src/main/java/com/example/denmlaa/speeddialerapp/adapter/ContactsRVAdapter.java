@@ -102,7 +102,6 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
                             case R.id.menu_widget:
                                 // TODO Setup the widget
                                 Bundle bundle = new Bundle();
-//                                bundle.putSerializable("contact", contact);
 
                                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                     AppWidgetManager mAppWidgetManager = context.getSystemService(AppWidgetManager.class);
