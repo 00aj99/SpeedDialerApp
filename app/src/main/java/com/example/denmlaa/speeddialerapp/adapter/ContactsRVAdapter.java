@@ -1,7 +1,6 @@
 package com.example.denmlaa.speeddialerapp.adapter;
 
 import android.Manifest;
-import android.annotation.SuppressLint;
 import android.appwidget.AppWidgetManager;
 import android.content.ComponentName;
 import android.content.Context;
@@ -25,8 +24,6 @@ import android.widget.Toast;
 
 import com.example.denmlaa.speeddialerapp.ContactWidgetProvider;
 import com.example.denmlaa.speeddialerapp.R;
-import com.example.denmlaa.speeddialerapp.activities.MainActivity;
-import com.example.denmlaa.speeddialerapp.activities.SplashWelcomeActivity;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
 import java.util.List;
@@ -74,54 +71,43 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
             }
         });
 
-        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-            @Override
-            public boolean onLongClick(View v) {
-                Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
-                PopupMenu popupMenu = new PopupMenu(wrapper, holder.itemView);
-                popupMenu.inflate(R.menu.contact_menu);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    Context wrapper = new ContextThemeWrapper(context, R.style.popupMenuStyle);
+                    PopupMenu popupMenu = new PopupMenu(wrapper, holder.itemView);
+                    popupMenu.inflate(R.menu.contact_menu);
 
-                // If sdk version is < 26, widget option is hidden
-                if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) {
-                    popupMenu.getMenu().findItem(R.id.menu_widget).setVisible(false);
-                }
+                    popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
+                        @Override
+                        public boolean onMenuItemClick(MenuItem item) {
+                            switch (item.getItemId()) {
+                                case R.id.menu_widget:
+                                    // TODO Setup the widget
+                                    Bundle bundle = new Bundle();
 
-                popupMenu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener() {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem item) {
-                        switch (item.getItemId()) {
-                            case R.id.menu_call:
-                                Uri number = Uri.parse("tel:" + contact.getContactNumber());
-                                Intent callContactIntent = new Intent(Intent.ACTION_CALL, number);
-                                if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
-                                    Toast.makeText(context, "Application is missing permission to call", Toast.LENGTH_SHORT).show();
-                                    return false;
-                                }
-                                context.startActivity(callContactIntent);
-                                break;
-                            case R.id.menu_widget:
-                                // TODO Setup the widget
-                                Bundle bundle = new Bundle();
+                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                                        AppWidgetManager mAppWidgetManager = context.getSystemService(AppWidgetManager.class);
+                                        ComponentName myProvider = new ComponentName(context, ContactWidgetProvider.class);
 
-                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                                    AppWidgetManager mAppWidgetManager = context.getSystemService(AppWidgetManager.class);
-                                    ComponentName myProvider = new ComponentName(context, ContactWidgetProvider.class);
-
-                                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                        mAppWidgetManager.requestPinAppWidget(myProvider, bundle, null);
+                                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                            mAppWidgetManager.requestPinAppWidget(myProvider, bundle, null);
+                                        }
                                     }
-                                }
-                                break;
-                            default:
-                                break;
+                                    break;
+                                default:
+                                    break;
+                            }
+                            return false;
                         }
-                        return false;
-                    }
-                });
-                popupMenu.show();
-                return true;
-            }
-        });
+                    });
+                    popupMenu.show();
+                    return true;
+                }
+            });
+        }
+
     }
 
     @Override
