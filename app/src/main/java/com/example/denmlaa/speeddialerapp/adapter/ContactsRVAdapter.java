@@ -26,6 +26,7 @@ import com.example.denmlaa.speeddialerapp.ContactWidgetProvider;
 import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.ViewHolder> {
@@ -130,5 +131,11 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
             contact_number = itemView.findViewById(R.id.contact_number);
             contact_call = itemView.findViewById(R.id.contact_call);
         }
+    }
+
+    public void setFilter(List<Contact> filterContacts) {
+        contacts = new ArrayList<>();
+        contacts.addAll(filterContacts);
+        notifyDataSetChanged();
     }
 }

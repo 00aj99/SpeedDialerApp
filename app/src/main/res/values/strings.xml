@@ -7,4 +7,5 @@
     <string name="call">Call</string>
     <string name="set_as_widget">Set as widget</string>
     <string name="speed_dialer">Speed Dialer</string>
+    <string name="search">Search</string>
 </resources>

@@ -4,21 +4,25 @@ import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Toast;
 
@@ -28,10 +32,13 @@ import com.example.denmlaa.speeddialerapp.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
 
     private RecyclerView recyclerView;
+    private List<Contact> contacts;
+    private ContactsRVAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+//        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -53,8 +61,30 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.app_menu, menu);
+        getMenuInflater().inflate(R.menu.app_menu, menu);
+        MenuItem menuItem = menu.findItem(R.id.search_item);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(menuItem);
+        searchView.setOnQueryTextListener(this);
+        return true;
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        newText = newText.toLowerCase();
+        List<Contact> newList = new ArrayList<>();
+        for (Contact contact : contacts) {
+            String contact_name = contact.getContactName().toLowerCase();
+            if (contact_name.contains(newText)) {
+                newList.add(contact);
+            }
+        }
+
+        adapter.setFilter(newList);
         return true;
     }
 
@@ -75,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private List<Contact> getContacts() {
-        List<Contact> contacts = new ArrayList<>();
+        contacts = new ArrayList<>();
 
         Cursor cursor = this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
@@ -147,6 +177,7 @@ public class MainActivity extends AppCompatActivity {
                     AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
                             .setMessage("In order to use this application, please turn on permissions")
                             .setCancelable(false)
+                            .setIcon(R.drawable.warning_dialog_icon)
                             .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
@@ -164,7 +195,7 @@ public class MainActivity extends AppCompatActivity {
     private class GetContactsTask extends AsyncTask<Void, Void, Void> {
 
         private ProgressDialog pd;
-        private List<Contact> contacts;
+//        private List<Contact> contacts;
 
         @Override
         protected void onPreExecute() {
@@ -185,11 +216,10 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             pd.dismiss();
-            ContactsRVAdapter adapter = new ContactsRVAdapter(MainActivity.this, contacts);
+            adapter = new ContactsRVAdapter(MainActivity.this, contacts);
             recyclerView.setAdapter(adapter);
         }
     }
 
-    // TODO ProgressBar
     // TODO Backup/Export contacts for share
 }
