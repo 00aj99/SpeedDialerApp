@@ -148,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         } else {
             // If permissions are granted, contacts are loaded
-            new GetContactsTask().execute((Void[]) null);
+            new GetContactsTask().execute();
         }
 
     }
@@ -171,7 +171,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // If permissions are granted, contacts are loaded
-                    new GetContactsTask().execute((Void[]) null);
+                    new GetContactsTask().execute();
                 } else {
                     // If permissions are not granted, another dialog is shown and application shuts down
                     AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
@@ -195,7 +195,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private class GetContactsTask extends AsyncTask<Void, Void, Void> {
 
         private ProgressDialog pd;
-//        private List<Contact> contacts;
 
         @Override
         protected void onPreExecute() {
@@ -219,6 +218,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             adapter = new ContactsRVAdapter(MainActivity.this, contacts);
             recyclerView.setAdapter(adapter);
         }
+
     }
 
     // TODO Backup/Export contacts for share
