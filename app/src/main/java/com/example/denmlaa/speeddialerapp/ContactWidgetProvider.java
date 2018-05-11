@@ -1,20 +1,13 @@
 package com.example.denmlaa.speeddialerapp;
 
-import android.Manifest;
 import android.app.PendingIntent;
 import android.appwidget.AppWidgetManager;
 import android.appwidget.AppWidgetProvider;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Bundle;
-import android.support.v4.app.ActivityCompat;
 import android.widget.RemoteViews;
-import android.widget.Toast;
-
-import com.example.denmlaa.speeddialerapp.activities.MainActivity;
 
 import static com.example.denmlaa.speeddialerapp.activities.ContactWidgetConfig.CONTACT_NAME_DEF;
 import static com.example.denmlaa.speeddialerapp.activities.ContactWidgetConfig.CONTACT_PHONE_DEFF;
