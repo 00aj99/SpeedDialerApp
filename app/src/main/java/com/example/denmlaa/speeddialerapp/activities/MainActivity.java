@@ -24,6 +24,8 @@ import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.denmlaa.speeddialerapp.R;
@@ -39,11 +41,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private RecyclerView recyclerView;
     private List<Contact> contacts;
     private ContactsRVAdapter adapter;
+    private ProgressBar progressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        progressBar = findViewById(R.id.progress_bar);
 
         // Checking for permissions
         checkForPermissions();
@@ -148,6 +153,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         } else {
             // If permissions are granted, contacts are loaded
+            progressBar.setVisibility(View.VISIBLE);
             new GetContactsTask().execute();
         }
 
@@ -171,6 +177,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
                     // If permissions are granted, contacts are loaded
+                    progressBar.setVisibility(View.VISIBLE);
                     new GetContactsTask().execute();
                 } else {
                     // If permissions are not granted, another dialog is shown and application shuts down
@@ -194,13 +201,6 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     private class GetContactsTask extends AsyncTask<Void, Void, Void> {
 
-        private ProgressDialog pd;
-
-        @Override
-        protected void onPreExecute() {
-            pd = ProgressDialog.show(MainActivity.this, "Loading contacts...", "Please Wait", true, false);
-        }
-
         @Override
         protected Void doInBackground(Void... voids) {
             contacts = getContacts();
@@ -208,15 +208,10 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         @Override
-        protected void onProgressUpdate(Void... values) {
-            super.onProgressUpdate(values);
-        }
-
-        @Override
         protected void onPostExecute(Void aVoid) {
-            pd.dismiss();
             adapter = new ContactsRVAdapter(MainActivity.this, contacts);
             recyclerView.setAdapter(adapter);
+            progressBar.setVisibility(View.GONE);
         }
 
     }
