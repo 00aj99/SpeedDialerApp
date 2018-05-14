@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.RecyclerView;
@@ -86,14 +85,14 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
                             switch (item.getItemId()) {
                                 case R.id.menu_widget:
                                     // TODO Setup the widget
-                                    Bundle bundle = new Bundle();
 
                                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                                         AppWidgetManager mAppWidgetManager = context.getSystemService(AppWidgetManager.class);
                                         ComponentName myProvider = new ComponentName(context, ContactWidgetProvider.class);
 
                                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                                            mAppWidgetManager.requestPinAppWidget(myProvider, bundle, null);
+                                            mAppWidgetManager.requestPinAppWidget(myProvider, null, null);
+
                                         }
                                     }
                                     break;

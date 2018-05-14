@@ -39,5 +39,4 @@ public class ContactWidgetProvider extends AppWidgetProvider {
         }
     }
 
-
 }
