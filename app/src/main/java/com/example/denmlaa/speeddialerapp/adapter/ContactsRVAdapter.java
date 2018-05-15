@@ -71,6 +71,20 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
             }
         });
 
+        holder.contact_favorites.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (holder.contact_favorites.getDrawable().getConstantState().equals(context.getDrawable(R.drawable.star_white_border).getConstantState())) {
+                    holder.contact_favorites.setImageResource(R.drawable.star_white);
+                    // TODO Contact is added to database (favorites)
+                } else {
+                    holder.contact_favorites.setImageResource(R.drawable.star_white_border);
+                    // TODO Contact is removed from database (favorites)
+                }
+
+            }
+        });
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
                 @Override
@@ -121,6 +135,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         private TextView contact_name;
         private TextView contact_number;
         private ImageView contact_call;
+        private ImageView contact_favorites;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -129,6 +144,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
             contact_name = itemView.findViewById(R.id.contact_name);
             contact_number = itemView.findViewById(R.id.contact_number);
             contact_call = itemView.findViewById(R.id.contact_call);
+            contact_favorites = itemView.findViewById(R.id.contact_favorites);
         }
     }
 

@@ -18,7 +18,7 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="8"
+        android:layout_weight="7"
         android:orientation="vertical"
         android:padding="10dp">
 
@@ -48,5 +48,14 @@
         android:layout_weight="1"
         android:padding="10dp"
         android:src="@drawable/call" />
+
+    <ImageView
+        android:id="@+id/contact_favorites"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_weight="1"
+        android:padding="10dp"
+        android:src="@drawable/star_white_border" />
 
 </LinearLayout>
