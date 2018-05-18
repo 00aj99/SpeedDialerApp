@@ -32,10 +32,12 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
 
     private Context context;
     private List<Contact> contacts;
+    private View.OnClickListener onClickListener;
 
-    public ContactsRVAdapter(Context context, List<Contact> contacts) {
+    public ContactsRVAdapter(Context context, List<Contact> contacts, View.OnClickListener onClickListener) {
         this.context = context;
         this.contacts = contacts;
+        this.onClickListener = onClickListener;
     }
 
     @NonNull
@@ -51,6 +53,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
 
         holder.contact_name.setText(contact.getContactName());
         holder.contact_number.setText(contact.getContactNumber());
+        holder.itemView.setTag(contact);
 
         if (contact.getContactImage() != null) {
             holder.contact_image.setImageURI(Uri.parse(contact.getContactImage()));
@@ -71,19 +74,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
             }
         });
 
-        holder.contact_favorites.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (holder.contact_favorites.getDrawable().getConstantState().equals(context.getDrawable(R.drawable.star_white_border).getConstantState())) {
-                    holder.contact_favorites.setImageResource(R.drawable.star_white);
-                    // TODO Contact is added to database (favorites)
-                } else {
-                    holder.contact_favorites.setImageResource(R.drawable.star_white_border);
-                    // TODO Contact is removed from database (favorites)
-                }
-
-            }
-        });
+        holder.contact_favorites.setOnClickListener(onClickListener);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {

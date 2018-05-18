@@ -21,6 +21,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -31,7 +32,7 @@ import com.example.denmlaa.speeddialerapp.model.Contact;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener {
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener{
 
     private RecyclerView recyclerView;
     private List<Contact> contacts;
@@ -204,9 +205,24 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            adapter = new ContactsRVAdapter(MainActivity.this, contacts);
+            adapter = new ContactsRVAdapter(MainActivity.this, contacts, MainActivity.this);
             recyclerView.setAdapter(adapter);
             progressBar.setVisibility(View.GONE);
+        }
+
+    }
+
+    @Override
+    public void onClick(View v) {
+        Contact contact = (Contact) v.getTag();
+        ImageView fav = v.findViewById(R.id.contact_favorites);
+
+        if (fav.getDrawable().getConstantState().equals(this.getDrawable(R.drawable.star_white_border).getConstantState())) {
+            fav.setImageResource(R.drawable.star_white);
+            // TODO Contact is added to database (favorites)
+        } else {
+            fav.setImageResource(R.drawable.star_white_border);
+            // TODO Contact is removed from database (favorites)
         }
 
     }
