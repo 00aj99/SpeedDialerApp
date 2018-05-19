@@ -1,6 +1,8 @@
 package com.example.denmlaa.speeddialerapp.activities;
 
 import android.Manifest;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.pm.PackageManager;
@@ -10,6 +12,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.AlertDialog;
@@ -18,26 +21,31 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.adapter.ContactsRVAdapter;
+import com.example.denmlaa.speeddialerapp.database.ContactViewModel;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener{
+public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener {
 
     private RecyclerView recyclerView;
     private List<Contact> contacts;
     private ContactsRVAdapter adapter;
     private ProgressBar progressBar;
+    private ContactViewModel viewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,6 +65,15 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setNestedScrollingEnabled(false);
+
+        viewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
+        viewModel.getContacts().observe(MainActivity.this, new Observer<List<Contact>>() {
+            @Override
+            public void onChanged(@Nullable List<Contact> contacts) {
+                // TODO Set this in widget class so that when contact is removed from db, it is removed from widget also
+//                Toast.makeText(MainActivity.this, "List size: " + contacts.size(), Toast.LENGTH_SHORT).show();
+            }
+        });
 
     }
 
@@ -94,6 +111,8 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         switch (item.getItemId()) {
             case R.id.item1:
                 Toast.makeText(this, "Backup contacts", Toast.LENGTH_SHORT).show();
+                // TODO Delete for test
+                viewModel.deleteAll();
                 break;
             case R.id.item2:
                 Toast.makeText(this, "Restore contacts", Toast.LENGTH_SHORT).show();
@@ -116,7 +135,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         while (cursor != null && cursor.moveToNext()) {
-            contacts.add(new Contact(cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
+            contacts.add(new Contact(
+                    cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
+                    cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.PHOTO_URI))));
         }
@@ -219,12 +240,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         if (fav.getDrawable().getConstantState().equals(this.getDrawable(R.drawable.star_white_border).getConstantState())) {
             fav.setImageResource(R.drawable.star_white);
-            // TODO Contact is added to database (favorites)
+            // Contact is added to database (favorites)
+            viewModel.addContact(contact);
         } else {
             fav.setImageResource(R.drawable.star_white_border);
-            // TODO Contact is removed from database (favorites)
+            // Contact is removed from database (favorites)
+            viewModel.deleteContact(contact);
         }
-
     }
 
     // TODO Backup/Export contacts for share

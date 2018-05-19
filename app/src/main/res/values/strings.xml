@@ -5,7 +5,8 @@
     <string name="contacts_backup">Contacts backup</string>
     <string name="restore_contacts">Restore contacts</string>
     <string name="call">Call</string>
-    <string name="set_as_widget">Set as widget</string>
+    <string name="set_as_widget">Add to widget</string>
     <string name="speed_dialer">Speed Dialer</string>
     <string name="search">Search</string>
+    <string name="remove_from_widget">Remove from widget</string>
 </resources>

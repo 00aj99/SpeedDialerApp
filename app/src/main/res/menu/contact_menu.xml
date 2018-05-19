@@ -7,4 +7,9 @@
         android:title="@string/set_as_widget"
         app:showAsAction="never" />
 
+    <item
+        android:id="@+id/remove_widget"
+        android:title="@string/remove_from_widget"
+        app:showAsAction="never" />
+
 </menu>
