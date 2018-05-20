@@ -34,6 +34,7 @@ import android.widget.Toast;
 import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.adapter.ContactsRVAdapter;
 import com.example.denmlaa.speeddialerapp.database.ContactViewModel;
+import com.example.denmlaa.speeddialerapp.database.ContactsDatabase;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private ContactsRVAdapter adapter;
     private ProgressBar progressBar;
     private ContactViewModel viewModel;
+    private List<Contact> contactsFromDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -221,12 +223,13 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         @Override
         protected Void doInBackground(Void... voids) {
             contacts = getContacts();
+            contactsFromDb = ContactsDatabase.getINSTANCE(MainActivity.this).contactDao().getAllContactsFromDb();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            adapter = new ContactsRVAdapter(MainActivity.this, contacts, MainActivity.this);
+            adapter = new ContactsRVAdapter(MainActivity.this, contacts, MainActivity.this, contactsFromDb);
             recyclerView.setAdapter(adapter);
             progressBar.setVisibility(View.GONE);
         }
