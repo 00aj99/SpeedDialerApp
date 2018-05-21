@@ -11,13 +11,14 @@ import com.example.denmlaa.speeddialerapp.model.Contact;
 public abstract class ContactsDatabase extends RoomDatabase {
 
     public abstract ContactDao contactDao();
+
     private static ContactsDatabase INSTANCE;
 
     public static ContactsDatabase getINSTANCE(Context context) {
-                if (INSTANCE == null) {
-                    INSTANCE = Room.databaseBuilder(context.getApplicationContext(), ContactsDatabase.class, "contacts_db")
-                            .build();
-                }
+        if (INSTANCE == null) {
+            INSTANCE = Room.databaseBuilder(context.getApplicationContext(), ContactsDatabase.class, "contacts_db")
+                    .build();
+        }
 
         return INSTANCE;
     }

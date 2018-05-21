@@ -5,11 +5,15 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -21,13 +25,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
-import android.view.ContextThemeWrapper;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.WindowManager;
+import android.webkit.MimeTypeMap;
 import android.widget.ImageView;
-import android.widget.PopupMenu;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
@@ -37,6 +40,9 @@ import com.example.denmlaa.speeddialerapp.database.ContactViewModel;
 import com.example.denmlaa.speeddialerapp.database.ContactsDatabase;
 import com.example.denmlaa.speeddialerapp.model.Contact;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -111,13 +117,32 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.item1:
-                Toast.makeText(this, "Backup contacts", Toast.LENGTH_SHORT).show();
-                // TODO Delete for test
-                viewModel.deleteAll();
+            case R.id.backup_contacts:
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                    break;
+                } else {
+                    new BackupContacts().execute();
+                }
                 break;
-            case R.id.item2:
-                Toast.makeText(this, "Restore contacts", Toast.LENGTH_SHORT).show();
+            case R.id.retore_contacts:
+                if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 3);
+                } else {
+                    final Intent intent = new Intent();
+
+                    final MimeTypeMap mime = MimeTypeMap.getSingleton();
+                    String tmptype = mime.getMimeTypeFromExtension("vcf");
+                    final File file = new File(Environment.getExternalStorageDirectory().toString() + "/Contacts.vcf");
+
+                    if (file.exists()) {
+                        intent.setDataAndType(Uri.fromFile(file), tmptype);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+                    }
+
+                }
                 break;
             default:
                 break;
@@ -126,6 +151,76 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return super.onOptionsItemSelected(item);
     }
 
+    // Export contacts
+    public void getVCF() {
+        final String vfile = "Contacts.vcf";
+
+        Cursor phones = getContentResolver().query(
+                ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null, null,
+                null, ContactsContract.Contacts.DISPLAY_NAME + " COLLATE LOCALIZED ASC");
+        if (phones != null && phones.getCount() > 0) {
+            phones.moveToFirst();
+        }
+
+        for (int i = 0; i < phones.getCount(); i++) {
+
+            String lookupKey = phones.getString(phones
+                    .getColumnIndex(ContactsContract.Contacts.LOOKUP_KEY));
+
+            Uri uri = Uri.withAppendedPath(
+                    ContactsContract.Contacts.CONTENT_VCARD_URI, lookupKey);
+
+            AssetFileDescriptor fd;
+            try {
+                fd = getContentResolver().openAssetFileDescriptor(uri,
+                        "r");
+                FileInputStream fis = fd.createInputStream();
+                byte[] buf = new byte[(int) fd.getDeclaredLength()];
+                fis.read(buf);
+                String VCard = new String(buf);
+                String path = Environment.getExternalStorageDirectory()
+                        .toString() + File.separator + vfile;
+                FileOutputStream mFileOutputStream = new FileOutputStream(path,
+                        true);
+                mFileOutputStream.write(VCard.toString().getBytes());
+                phones.moveToNext();
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
+    }
+
+    // Export contacts
+    private class BackupContacts extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            getWindow().setFlags(
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            recyclerView.setVisibility(View.GONE);
+            progressBar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            getVCF();
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+            recyclerView.setVisibility(View.VISIBLE);
+            progressBar.setVisibility(View.GONE);
+            Toast.makeText(MainActivity.this, "Contacts exported", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    // Get contacts from phone
     private List<Contact> getContacts() {
         contacts = new ArrayList<>();
 
@@ -214,6 +309,60 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     alert.setTitle("Enable permissions");
                     alert.show();
                 }
+                break;
+            }
+            case 2: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // If permissions are granted, contacts are exported
+                    new BackupContacts().execute();
+                } else {
+                    final AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
+                            .setMessage("In order to export contacts, please turn on permissions")
+                            .setCancelable(true)
+                            .setIcon(R.drawable.warning_dialog_icon)
+                            .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                                }
+                            });
+                    AlertDialog alert = warning_msg.create();
+                    alert.setTitle("Enable permissions");
+                    alert.show();
+                }
+                break;
+            }
+            case 3: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // If permissions are granted, contacts are imported
+                    final Intent intent = new Intent();
+
+                    final MimeTypeMap mime = MimeTypeMap.getSingleton();
+                    String tmptype = mime.getMimeTypeFromExtension("vcf");
+                    final File file = new File(Environment.getExternalStorageDirectory().toString() + "/Contacts.vcf");
+
+                    if (file.exists()) {
+                        intent.setDataAndType(Uri.fromFile(file), tmptype);
+                        startActivity(intent);
+                    } else {
+                        Toast.makeText(this, "File not found", Toast.LENGTH_SHORT).show();
+                    }
+                } else {
+                    final AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
+                            .setMessage("In order to export contacts, please turn on permission")
+                            .setCancelable(true)
+                            .setIcon(R.drawable.warning_dialog_icon)
+                            .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, 2);
+                                }
+                            });
+                    AlertDialog alert = warning_msg.create();
+                    alert.setTitle("Enable permissions");
+                    alert.show();
+                }
+                break;
             }
         }
     }
@@ -242,7 +391,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         ImageView fav = v.findViewById(R.id.contact_favorites);
 
         if (fav.getDrawable().getConstantState().equals(this.getDrawable(R.drawable.star_white_border).getConstantState())) {
-            fav.setImageResource(R.drawable.star_white);
+            fav.setImageResource(R.drawable.ic_star_yellow_24dp);
             // Contact is added to database (favorites)
             viewModel.addContact(contact);
         } else {
@@ -251,6 +400,4 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             viewModel.deleteContact(contact);
         }
     }
-
-    // TODO Backup/Export contacts for share
 }

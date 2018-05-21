@@ -22,7 +22,7 @@ public class Contact {
     @Nullable
     private String contactImage;
 
-    public Contact(long id, String contactName, String contactNumber, String contactImage) {
+    public Contact(long id, String contactName, String contactNumber, @Nullable String contactImage) {
         this.id = id;
         this.contactName = contactName;
         this.contactNumber = contactNumber;

@@ -54,9 +54,9 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
 
         // Check if contact is in database already. If contact is in database, asign star_white drawable
         if (contactsFromDb != null) {
-            for (Contact contactFromDb: contactsFromDb) {
+            for (Contact contactFromDb : contactsFromDb) {
                 if (contactFromDb.getId() == contact.getId()) {
-                    holder.contact_favorites.setImageResource(R.drawable.star_white);
+                    holder.contact_favorites.setImageResource(R.drawable.ic_star_yellow_24dp);
                 }
             }
         }

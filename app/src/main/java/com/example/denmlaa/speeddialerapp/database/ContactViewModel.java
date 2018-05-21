@@ -34,11 +34,6 @@ public class ContactViewModel extends AndroidViewModel {
         new AddContactAT(contactsDatabase).execute(contact);
     }
 
-    // TODO Only for test purposes
-    public void deleteAll() {
-        new DeleteAllAT(contactsDatabase).execute();
-    }
-
     private class DeleteAT extends AsyncTask<Contact, Void, Void> {
 
         private ContactsDatabase contactsDatabase;
@@ -65,22 +60,6 @@ public class ContactViewModel extends AndroidViewModel {
         @Override
         protected Void doInBackground(Contact... contacts) {
             contactsDatabase.contactDao().addContact(contacts[0]);
-            return null;
-        }
-    }
-
-    // TODO Only for test purposes
-    private class DeleteAllAT extends AsyncTask<Void, Void, Void> {
-
-        private ContactsDatabase contactsDatabase;
-
-        DeleteAllAT(ContactsDatabase db) {
-            this.contactsDatabase = db;
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            contactsDatabase.contactDao().deleteAll();
             return null;
         }
     }
