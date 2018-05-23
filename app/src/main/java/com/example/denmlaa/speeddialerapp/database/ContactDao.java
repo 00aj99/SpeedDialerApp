@@ -7,29 +7,29 @@ import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
 
-import com.example.denmlaa.speeddialerapp.model.Contact;
+import com.example.denmlaa.speeddialerapp.database.entity.ContactEntity;
 
 import java.util.List;
 
 @Dao
 public interface ContactDao {
 
-    @Query("SELECT * FROM Contact")
-    LiveData<List<Contact>> getContacts();
+    @Query("SELECT * FROM ContactEntity")
+    LiveData<List<ContactEntity>> getContacts();
 
-    @Query("SELECT * FROM Contact WHERE id = :contact_id")
-    Contact getContactById(int contact_id);
+    @Query("SELECT * FROM ContactEntity WHERE id = :contact_id")
+    ContactEntity getContactById(int contact_id);
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    void addContact(Contact contact);
+    void addContact(ContactEntity contactEntity);
 
     @Delete
-    void deleteContact(Contact contact);
+    void deleteContact(ContactEntity contactEntity);
 
-    @Query("DELETE FROM Contact")
+    @Query("DELETE FROM ContactEntity")
     void deleteAll();
 
-    @Query("SELECT * FROM Contact")
-    List<Contact> getAllContactsFromDb();
+    @Query("SELECT * FROM ContactEntity")
+    List<ContactEntity> getAllContactsFromDb();
 
 }

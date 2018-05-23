@@ -3,7 +3,7 @@
     <string name="confirm">Confirm</string>
     <string name="close">Ok</string>
     <string name="contacts_backup">Contacts backup</string>
-    <string name="restore_contacts">Restore contacts</string>
+    <string name="restore_contacts">Restore contactEntities</string>
     <string name="call">Call</string>
     <string name="set_as_widget">Add to widget</string>
     <string name="speed_dialer">Speed Dialer</string>

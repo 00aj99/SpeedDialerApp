@@ -16,7 +16,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.denmlaa.speeddialerapp.R;
-import com.example.denmlaa.speeddialerapp.model.Contact;
+import com.example.denmlaa.speeddialerapp.database.entity.ContactEntity;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,13 +24,13 @@ import java.util.List;
 public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.ViewHolder> {
 
     private Context context;
-    private List<Contact> contacts;
+    private List<ContactEntity> contactEntities;
     private View.OnClickListener onClickListener;
-    private List<Contact> contactsFromDb;
+    private List<ContactEntity> contactsFromDb;
 
-    public ContactsRVAdapter(Context context, List<Contact> contacts, View.OnClickListener onClickListener, List<Contact> contactsFromDb) {
+    public ContactsRVAdapter(Context context, List<ContactEntity> contactEntities, View.OnClickListener onClickListener, List<ContactEntity> contactsFromDb) {
         this.context = context;
-        this.contacts = contacts;
+        this.contactEntities = contactEntities;
         this.onClickListener = onClickListener;
         this.contactsFromDb = contactsFromDb;
     }
@@ -46,23 +46,23 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
 
     @Override
     public void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
-        final Contact contact = contacts.get(position);
+        final ContactEntity contactEntity = contactEntities.get(position);
 
-        holder.contact_name.setText(contact.getContactName());
-        holder.contact_number.setText(contact.getContactNumber());
-        holder.contact_favorites.setTag(contact);
+        holder.contact_name.setText(contactEntity.getContactName());
+        holder.contact_number.setText(contactEntity.getContactNumber());
+        holder.contact_favorites.setTag(contactEntity);
 
-        // Check if contact is in database already. If contact is in database, asign star_white drawable
+        // Check if contactEntity is in database already. If contactEntity is in database, asign star_white drawable
         if (contactsFromDb != null) {
-            for (Contact contactFromDb : contactsFromDb) {
-                if (contactFromDb.getId() == contact.getId()) {
+            for (ContactEntity contactEntityFromDb : contactsFromDb) {
+                if (contactEntityFromDb.getId() == contactEntity.getId()) {
                     holder.contact_favorites.setImageResource(R.drawable.ic_star_yellow_24dp);
                 }
             }
         }
 
-        if (contact.getContactImage() != null) {
-            holder.contact_image.setImageURI(Uri.parse(contact.getContactImage()));
+        if (contactEntity.getContactImage() != null) {
+            holder.contact_image.setImageURI(Uri.parse(contactEntity.getContactImage()));
         } else {
             holder.contact_image.setImageResource(R.drawable.contact_default);
         }
@@ -70,7 +70,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         holder.contact_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Uri number = Uri.parse("tel:" + contact.getContactNumber());
+                Uri number = Uri.parse("tel:" + contactEntity.getContactNumber());
                 Intent callIntent = new Intent(Intent.ACTION_CALL, number);
                 if (ActivityCompat.checkSelfPermission(context, Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED) {
                     Toast.makeText(context, "Application is missing permission to call", Toast.LENGTH_SHORT).show();
@@ -86,7 +86,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return contacts.size();
+        return contactEntities.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
@@ -108,9 +108,9 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         }
     }
 
-    public void setFilter(List<Contact> filterContacts) {
-        contacts = new ArrayList<>();
-        contacts.addAll(filterContacts);
+    public void setFilter(List<ContactEntity> filterContactEntities) {
+        contactEntities = new ArrayList<>();
+        contactEntities.addAll(filterContactEntities);
         notifyDataSetChanged();
     }
 

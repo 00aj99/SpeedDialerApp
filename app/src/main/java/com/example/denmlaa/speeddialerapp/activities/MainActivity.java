@@ -38,7 +38,7 @@ import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.adapter.ContactsRVAdapter;
 import com.example.denmlaa.speeddialerapp.database.ContactViewModel;
 import com.example.denmlaa.speeddialerapp.database.ContactsDatabase;
-import com.example.denmlaa.speeddialerapp.model.Contact;
+import com.example.denmlaa.speeddialerapp.database.entity.ContactEntity;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -49,11 +49,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity implements SearchView.OnQueryTextListener, View.OnClickListener {
 
     private RecyclerView recyclerView;
-    private List<Contact> contacts;
+    private List<ContactEntity> contactEntities;
     private ContactsRVAdapter adapter;
     private ProgressBar progressBar;
     private ContactViewModel viewModel;
-    private List<Contact> contactsFromDb;
+    private List<ContactEntity> contactsFromDb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,11 +75,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         recyclerView.setNestedScrollingEnabled(false);
 
         viewModel = ViewModelProviders.of(this).get(ContactViewModel.class);
-        viewModel.getContacts().observe(MainActivity.this, new Observer<List<Contact>>() {
+        viewModel.getContacts().observe(MainActivity.this, new Observer<List<ContactEntity>>() {
             @Override
-            public void onChanged(@Nullable List<Contact> contacts) {
+            public void onChanged(@Nullable List<ContactEntity> contactEntities) {
                 // TODO Set this in widget class so that when contact is removed from db, it is removed from widget also
-//                Toast.makeText(MainActivity.this, "List size: " + contacts.size(), Toast.LENGTH_SHORT).show();
+//                Toast.makeText(MainActivity.this, "List size: " + contactEntities.size(), Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -102,11 +102,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     @Override
     public boolean onQueryTextChange(String newText) {
         newText = newText.toLowerCase();
-        List<Contact> newList = new ArrayList<>();
-        for (Contact contact : contacts) {
-            String contact_name = contact.getContactName().toLowerCase();
+        List<ContactEntity> newList = new ArrayList<>();
+        for (ContactEntity contactEntity : contactEntities) {
+            String contact_name = contactEntity.getContactName().toLowerCase();
             if (contact_name.contains(newText)) {
-                newList.add(contact);
+                newList.add(contactEntity);
             }
         }
 
@@ -151,7 +151,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return super.onOptionsItemSelected(item);
     }
 
-    // Export contacts
+    // Export contactEntities
     public void getVCF() {
         final String vfile = "Contacts.vcf";
 
@@ -190,7 +190,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    // Export contacts
+    // Export contactEntities
     private class BackupContacts extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -220,9 +220,9 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    // Get contacts from phone
-    private List<Contact> getContacts() {
-        contacts = new ArrayList<>();
+    // Get contactEntities from phone
+    private List<ContactEntity> getContactEntities() {
+        contactEntities = new ArrayList<>();
 
         Cursor cursor = this.getContentResolver().query(ContactsContract.CommonDataKinds.Phone.CONTENT_URI, null,
                 null, null, ContactsContract.Contacts.DISPLAY_NAME + " ASC");
@@ -232,7 +232,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         while (cursor != null && cursor.moveToNext()) {
-            contacts.add(new Contact(
+            contactEntities.add(new ContactEntity(
                     cursor.getInt(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.CONTACT_ID)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.DISPLAY_NAME)),
                     cursor.getString(cursor.getColumnIndex(ContactsContract.CommonDataKinds.Phone.NUMBER)),
@@ -240,7 +240,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
 
         cursor.close();
-        return contacts;
+        return contactEntities;
     }
 
     private void checkForPermissions() {
@@ -252,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
             // Simple permission description is shown before we start permission dialog
             AlertDialog.Builder warning_msg = new AlertDialog.Builder(MainActivity.this)
-                    .setMessage("Allow Speed Dialer to access your contacts and manage calls. This will allow you to add contacts and make quick calls")
+                    .setMessage("Allow Speed Dialer to access your contactEntities and manage calls. This will allow you to add contactEntities and make quick calls")
                     .setCancelable(false)
                     .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                         @Override
@@ -266,7 +266,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             alert.show();
 
         } else {
-            // If permissions are granted, contacts are loaded
+            // If permissions are granted, contactEntities are loaded
             progressBar.setVisibility(View.VISIBLE);
             new GetContactsTask().execute();
         }
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    // If permissions are granted, contacts are loaded
+                    // If permissions are granted, contactEntities are loaded
                     progressBar.setVisibility(View.VISIBLE);
                     new GetContactsTask().execute();
                 } else {
@@ -313,11 +313,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
             case 2: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // If permissions are granted, contacts are exported
+                    // If permissions are granted, contactEntities are exported
                     new BackupContacts().execute();
                 } else {
                     final AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
-                            .setMessage("In order to export contacts, please turn on permissions")
+                            .setMessage("In order to export contactEntities, please turn on permissions")
                             .setCancelable(true)
                             .setIcon(R.drawable.warning_dialog_icon)
                             .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -334,7 +334,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
             case 3: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // If permissions are granted, contacts are imported
+                    // If permissions are granted, contactEntities are imported
                     final Intent intent = new Intent();
 
                     final MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -349,7 +349,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     }
                 } else {
                     final AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
-                            .setMessage("In order to export contacts, please turn on permission")
+                            .setMessage("In order to export contactEntities, please turn on permission")
                             .setCancelable(true)
                             .setIcon(R.drawable.warning_dialog_icon)
                             .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -371,14 +371,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         @Override
         protected Void doInBackground(Void... voids) {
-            contacts = getContacts();
+            contactEntities = getContactEntities();
             contactsFromDb = ContactsDatabase.getINSTANCE(MainActivity.this).contactDao().getAllContactsFromDb();
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            adapter = new ContactsRVAdapter(MainActivity.this, contacts, MainActivity.this, contactsFromDb);
+            adapter = new ContactsRVAdapter(MainActivity.this, contactEntities, MainActivity.this, contactsFromDb);
             recyclerView.setAdapter(adapter);
             progressBar.setVisibility(View.GONE);
         }
@@ -387,17 +387,17 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
     @Override
     public void onClick(View v) {
-        Contact contact = (Contact) v.getTag();
+        ContactEntity contactEntity = (ContactEntity) v.getTag();
         ImageView fav = v.findViewById(R.id.contact_favorites);
 
         if (fav.getDrawable().getConstantState().equals(this.getDrawable(R.drawable.star_white_border).getConstantState())) {
             fav.setImageResource(R.drawable.ic_star_yellow_24dp);
-            // Contact is added to database (favorites)
-            viewModel.addContact(contact);
+            // ContactEntity is added to database (favorites)
+            viewModel.addContact(contactEntity);
         } else {
             fav.setImageResource(R.drawable.star_white_border);
-            // Contact is removed from database (favorites)
-            viewModel.deleteContact(contact);
+            // ContactEntity is removed from database (favorites)
+            viewModel.deleteContact(contactEntity);
         }
     }
 }

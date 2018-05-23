@@ -5,9 +5,9 @@ import android.arch.persistence.room.Room;
 import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
-import com.example.denmlaa.speeddialerapp.model.Contact;
+import com.example.denmlaa.speeddialerapp.database.entity.ContactEntity;
 
-@Database(entities = {Contact.class}, version = 1)
+@Database(entities = {ContactEntity.class}, version = 2)
 public abstract class ContactsDatabase extends RoomDatabase {
 
     public abstract ContactDao contactDao();
