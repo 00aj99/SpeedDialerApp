@@ -1,11 +1,14 @@
 package com.example.denmlaa.speeddialerapp.activities;
 
 import android.Manifest;
+import android.appwidget.AppWidgetManager;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.ComponentName;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.res.AssetFileDescriptor;
 import android.database.Cursor;
@@ -34,11 +37,13 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.denmlaa.speeddialerapp.util.widget.ContactWidgetProvider;
 import com.example.denmlaa.speeddialerapp.R;
-import com.example.denmlaa.speeddialerapp.adapter.ContactsRVAdapter;
+import com.example.denmlaa.speeddialerapp.util.adapter.ContactsRVAdapter;
 import com.example.denmlaa.speeddialerapp.database.ContactViewModel;
 import com.example.denmlaa.speeddialerapp.database.ContactsDatabase;
 import com.example.denmlaa.speeddialerapp.database.entity.ContactEntity;
+import com.google.gson.Gson;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -55,19 +60,26 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
     private ContactViewModel viewModel;
     private List<ContactEntity> contactsFromDb;
 
+    public static final String SHARED_PREFS = "com.example.denmlaa.speeddialerapp.activities";
+    public static final String CONTACTS_KEY = "contacts_from_database";
+
+    private SharedPreferences prefs;
+    private SharedPreferences.Editor editor;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         progressBar = findViewById(R.id.progress_bar);
+        prefs = getSharedPreferences(SHARED_PREFS, MODE_PRIVATE);
+        editor = prefs.edit();
 
         // Checking for permissions
         checkForPermissions();
 
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
-//        Objects.requireNonNull(getSupportActionBar()).setDisplayShowTitleEnabled(false);
 
         recyclerView = findViewById(R.id.recycler_view);
         recyclerView.setHasFixedSize(true);
@@ -78,8 +90,19 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         viewModel.getContacts().observe(MainActivity.this, new Observer<List<ContactEntity>>() {
             @Override
             public void onChanged(@Nullable List<ContactEntity> contactEntities) {
-                // TODO Set this in widget class so that when contact is removed from db, it is removed from widget also
-//                Toast.makeText(MainActivity.this, "List size: " + contactEntities.size(), Toast.LENGTH_SHORT).show();
+                Gson gson = new Gson();
+                String jsonContacts = gson.toJson(contactEntities);
+
+                editor.putString(CONTACTS_KEY, jsonContacts);
+                editor.apply();
+
+                AppWidgetManager appWidgetManager = AppWidgetManager.getInstance(getApplication());
+
+                int[] ids = appWidgetManager.getAppWidgetIds(
+                        new ComponentName(getApplication(), ContactWidgetProvider.class));
+
+                appWidgetManager.notifyAppWidgetViewDataChanged(ids, R.id.grid_view);
+
             }
         });
 
@@ -151,7 +174,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         return super.onOptionsItemSelected(item);
     }
 
-    // Export contactEntities
+    // Export contacts
     public void getVCF() {
         final String vfile = "Contacts.vcf";
 
@@ -190,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    // Export contactEntities
+    // Export contacts AsyncTask
     private class BackupContacts extends AsyncTask<Void, Void, Void> {
 
         @Override
@@ -381,6 +404,14 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             adapter = new ContactsRVAdapter(MainActivity.this, contactEntities, MainActivity.this, contactsFromDb);
             recyclerView.setAdapter(adapter);
             progressBar.setVisibility(View.GONE);
+
+            if (!contactsFromDb.isEmpty()) {
+                Gson gson = new Gson();
+                String jsonContacts = gson.toJson(contactsFromDb);
+
+                editor.putString(CONTACTS_KEY, jsonContacts);
+                editor.apply();
+            }
         }
 
     }
@@ -392,11 +423,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
 
         if (fav.getDrawable().getConstantState().equals(this.getDrawable(R.drawable.star_white_border).getConstantState())) {
             fav.setImageResource(R.drawable.ic_star_yellow_24dp);
-            // ContactEntity is added to database (favorites)
+            // Contact is added to database (favorites)
             viewModel.addContact(contactEntity);
         } else {
             fav.setImageResource(R.drawable.star_white_border);
-            // ContactEntity is removed from database (favorites)
+            // Contact is removed from database (favorites)
             viewModel.deleteContact(contactEntity);
         }
     }

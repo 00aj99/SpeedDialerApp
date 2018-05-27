@@ -13,17 +13,16 @@ import com.example.denmlaa.speeddialerapp.R;
 
 public class SplashWelcomeActivity extends AppCompatActivity {
 
-    private TextView splash_text;
-    private ImageView splash_image;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash_welcome);
 
-        splash_image = findViewById(R.id.splash_image);
-        splash_text = findViewById(R.id.splash_text);
+        ImageView splash_image = findViewById(R.id.splash_image);
+        TextView splash_text = findViewById(R.id.splash_text);
+
         Animation anim = AnimationUtils.loadAnimation(this, R.anim.splash_animation);
+
         splash_text.startAnimation(anim);
         splash_image.startAnimation(anim);
 

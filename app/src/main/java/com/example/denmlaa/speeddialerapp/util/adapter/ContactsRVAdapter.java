@@ -1,4 +1,4 @@
-package com.example.denmlaa.speeddialerapp.adapter;
+package com.example.denmlaa.speeddialerapp.util.adapter;
 
 import android.Manifest;
 import android.content.Context;
@@ -52,7 +52,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         holder.contact_number.setText(contactEntity.getContactNumber());
         holder.contact_favorites.setTag(contactEntity);
 
-        // Check if contactEntity is in database already. If contactEntity is in database, asign star_white drawable
+        // Check if contact is in database already. If contact is in database, asign star_white drawable
         if (contactsFromDb != null) {
             for (ContactEntity contactEntityFromDb : contactsFromDb) {
                 if (contactEntityFromDb.getId() == contactEntity.getId()) {
@@ -67,6 +67,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
             holder.contact_image.setImageResource(R.drawable.contact_default);
         }
 
+        // ImageView contact_call. OnClick call.
         holder.contact_call.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,6 +109,7 @@ public class ContactsRVAdapter extends RecyclerView.Adapter<ContactsRVAdapter.Vi
         }
     }
 
+    // Contact search view. Contact list is filtered and adapter notified
     public void setFilter(List<ContactEntity> filterContactEntities) {
         contactEntities = new ArrayList<>();
         contactEntities.addAll(filterContactEntities);

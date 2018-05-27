@@ -7,7 +7,7 @@ import android.content.Context;
 
 import com.example.denmlaa.speeddialerapp.database.entity.ContactEntity;
 
-@Database(entities = {ContactEntity.class}, version = 2)
+@Database(entities = {ContactEntity.class}, version = 1)
 public abstract class ContactsDatabase extends RoomDatabase {
 
     public abstract ContactDao contactDao();
