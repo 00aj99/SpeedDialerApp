@@ -37,6 +37,7 @@ import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.denmlaa.speeddialerapp.App;
 import com.example.denmlaa.speeddialerapp.util.widget.ContactWidgetProvider;
 import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.util.adapter.ContactsRVAdapter;
@@ -395,7 +396,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         @Override
         protected Void doInBackground(Void... voids) {
             contactEntities = getContactEntities();
-            contactsFromDb = ContactsDatabase.getINSTANCE(MainActivity.this).contactDao().getAllContactsFromDb();
+            contactsFromDb = ((App) getApplicationContext()).getDatabaseInstance().contactDao().getAllContactsFromDb();
             return null;
         }
 

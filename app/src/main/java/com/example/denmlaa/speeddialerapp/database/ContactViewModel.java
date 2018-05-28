@@ -6,6 +6,7 @@ import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
+import com.example.denmlaa.speeddialerapp.App;
 import com.example.denmlaa.speeddialerapp.database.entity.ContactEntity;
 
 import java.util.List;
@@ -18,8 +19,8 @@ public class ContactViewModel extends AndroidViewModel {
     public ContactViewModel(@NonNull Application application) {
         super(application);
 
-        contactsDatabase = ContactsDatabase.getINSTANCE(this.getApplication());
-        contacts = contactsDatabase.contactDao().getContacts();
+        contactsDatabase = ((App) application).getDatabaseInstance();
+        contacts = ((App) application).getDatabaseInstance().contactDao().getContacts();
     }
 
     public LiveData<List<ContactEntity>> getContacts() {

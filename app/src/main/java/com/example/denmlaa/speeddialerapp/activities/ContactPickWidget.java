@@ -12,6 +12,7 @@ import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 
+import com.example.denmlaa.speeddialerapp.App;
 import com.example.denmlaa.speeddialerapp.util.widget.ContactWidgetProvider;
 import com.example.denmlaa.speeddialerapp.R;
 import com.example.denmlaa.speeddialerapp.database.ContactViewModel;
@@ -26,7 +27,6 @@ import static com.example.denmlaa.speeddialerapp.activities.MainActivity.CONTACT
 public class ContactPickWidget extends AppCompatActivity {
 
     private static final int PICK_CONTACT_REQUEST = 1;
-    //    private int appWidgetId = AppWidgetManager.INVALID_APPWIDGET_ID;
     private ContactViewModel viewModel;
     private SharedPreferences prefs;
     private SharedPreferences.Editor editor;
@@ -82,7 +82,7 @@ public class ContactPickWidget extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            contactsFromDb = ContactsDatabase.getINSTANCE(ContactPickWidget.this).contactDao().getAllContactsFromDb();
+            contactsFromDb = ((App) getApplicationContext()).getDatabaseInstance().contactDao().getAllContactsFromDb();
             return null;
         }
 

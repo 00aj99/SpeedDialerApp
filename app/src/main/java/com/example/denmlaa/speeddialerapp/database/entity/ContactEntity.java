@@ -31,13 +31,6 @@ public class ContactEntity implements Contact {
         this.contactImage = contactImage;
     }
 
-    @Ignore
-    public ContactEntity(String contactName, String contactNumber, @Nullable String contactImage) {
-        this.contactName = contactName;
-        this.contactNumber = contactNumber;
-        this.contactImage = contactImage;
-    }
-
     @Override
     public int getId() {
         return id;
