@@ -10,9 +10,9 @@
     <application
         android:name=".App"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/test_logo2"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/test_logo2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -31,7 +31,7 @@
 
         <receiver
             android:name=".util.widget.ContactWidgetProvider"
-            android:icon="@drawable/ic_launcher_background"
+            android:icon="@drawable/test_logo"
             android:label="Speed Dialer">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -45,14 +45,7 @@
         <service
             android:name=".util.widget.GridWidgetService"
             android:permission="android.permission.BIND_REMOTEVIEWS" />
-
-        <activity android:name=".activities.ContactWidgetConfig">
-
-            <!-- <intent-filter> -->
-            <!-- <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE"/> -->
-            <!-- </intent-filter> -->
-        </activity>
-        <activity android:name=".activities.ContactPickWidget"></activity>
+        <activity android:name=".activities.ContactPickWidget" />
     </application>
 
 </manifest>

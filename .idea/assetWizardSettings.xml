@@ -60,8 +60,7 @@
                                           <PersistentState>
                                             <option name="values">
                                               <map>
-                                                <entry key="scalingPercent" value="63" />
-                                                <entry key="trimmed" value="true" />
+                                                <entry key="scalingPercent" value="39" />
                                               </map>
                                             </option>
                                           </PersistentState>
@@ -72,17 +71,16 @@
                                   <option name="values">
                                     <map>
                                       <entry key="backgroundImage" value="C:\Users\denmlaa\Desktop\background_for_phone.jpg" />
-                                      <entry key="foregroundImage" value="C:\Users\denmlaa\Desktop\phone.png" />
+                                      <entry key="backgroundLayerName" value="test_logo_background2" />
+                                      <entry key="foregroundImage" value="C:\Users\denmlaa\Desktop\phone front logo.png" />
+                                      <entry key="foregroundLayerName" value="test_logo_foreground2" />
+                                      <entry key="legacyIconShape" value="CIRCLE" />
+                                      <entry key="outputName" value="test_logo2" />
                                     </map>
                                   </option>
                                 </PersistentState>
                               </value>
                             </entry>
-                          </map>
-                        </option>
-                        <option name="values">
-                          <map>
-                            <entry key="outputIconType" value="ACTIONBAR" />
                           </map>
                         </option>
                       </PersistentState>

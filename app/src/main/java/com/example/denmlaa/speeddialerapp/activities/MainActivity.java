@@ -244,7 +244,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         }
     }
 
-    // Get contactEntities from phone
+    // Get contacts from phone
     private List<ContactEntity> getContactEntities() {
         contactEntities = new ArrayList<>();
 
@@ -276,7 +276,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
         if (!hasPermissions(MainActivity.this, PERMISSIONS)) {
             // Simple permission description is shown before we start permission dialog
             AlertDialog.Builder warning_msg = new AlertDialog.Builder(MainActivity.this)
-                    .setMessage("Allow Speed Dialer to access your contactEntities and manage calls. This will allow you to add contactEntities and make quick calls")
+                    .setMessage("Allow Speed Dialer to access your contacs and manage calls. This will allow you to add contacts and make quick calls")
                     .setCancelable(false)
                     .setPositiveButton(R.string.confirm, new DialogInterface.OnClickListener() {
                         @Override
@@ -290,7 +290,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             alert.show();
 
         } else {
-            // If permissions are granted, contactEntities are loaded
+            // If permissions are granted, contacts are loaded
             progressBar.setVisibility(View.VISIBLE);
             new GetContactsTask().execute();
         }
@@ -314,7 +314,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             case 1: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    // If permissions are granted, contactEntities are loaded
+                    // If permissions are granted, contacts are loaded
                     progressBar.setVisibility(View.VISIBLE);
                     new GetContactsTask().execute();
                 } else {
@@ -337,11 +337,11 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
             case 2: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // If permissions are granted, contactEntities are exported
+                    // If permissions are granted, contacts are exported
                     new BackupContacts().execute();
                 } else {
                     final AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
-                            .setMessage("In order to export contactEntities, please turn on permissions")
+                            .setMessage("In order to export contacts, please turn on permissions")
                             .setCancelable(true)
                             .setIcon(R.drawable.warning_dialog_icon)
                             .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
@@ -358,7 +358,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
             }
             case 3: {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // If permissions are granted, contactEntities are imported
+                    // If permissions are granted, contacts are imported
                     final Intent intent = new Intent();
 
                     final MimeTypeMap mime = MimeTypeMap.getSingleton();
@@ -373,7 +373,7 @@ public class MainActivity extends AppCompatActivity implements SearchView.OnQuer
                     }
                 } else {
                     final AlertDialog.Builder warning_msg = new AlertDialog.Builder(this)
-                            .setMessage("In order to export contactEntities, please turn on permission")
+                            .setMessage("In order to export contacts, please turn on permission")
                             .setCancelable(true)
                             .setIcon(R.drawable.warning_dialog_icon)
                             .setPositiveButton(R.string.close, new DialogInterface.OnClickListener() {
